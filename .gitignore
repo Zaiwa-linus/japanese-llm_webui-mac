@@ -1,0 +1,5 @@
+# .vscode ディレクトリを無視
+.vscode/
+
+# venv ディレクトリを無視
+venv/
