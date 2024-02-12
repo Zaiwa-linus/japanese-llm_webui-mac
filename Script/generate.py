@@ -9,6 +9,38 @@ import time
 import mlx.core as mx  # mlx.coreモジュールをmxとしてインポート
 from Script import models  # modelsモジュールをインポート
 
+def generate_tokens(
+    model: models.Model,  # モデルクラスのインスタンス
+    tokenizer: models.GGUFTokenizer,  # トークナイザクラスのインスタンス
+    prompt: str,  # プロンプト文字列
+    max_tokens: int,  # 生成する最大トークン数
+    temp: float = 0.0  # サンプリング温度
+) -> list:
+    prompt_encoded = tokenizer.encode(prompt)
+    tokens = []
+    for token, n in zip(models.generate(prompt_encoded, model, temp), range(max_tokens)):
+        if token == tokenizer.eos_token_id or n >= max_tokens:
+            break
+        tokens.append(token.item())
+    return tokens
+
+def generate_tokens_iter(
+    model: models.Model,
+    tokenizer: models.GGUFTokenizer,
+    prompt: str,
+    max_tokens: int,
+    temp: float = 0.0
+):
+    prompt_encoded = tokenizer.encode(prompt)
+    tokens = []
+    for token, n in zip(models.generate(prompt_encoded, model, temp), range(max_tokens)):
+        if token == tokenizer.eos_token_id or n >= max_tokens:
+            break
+        tokens.append(token.item())
+        # 生成されたトークンを逐次的にyieldする
+        yield tokenizer.decode(tokens)
+
+
 def generate(
     model: models.Model,  # モデルクラスのインスタンス
     tokenizer: models.GGUFTokenizer,  # トークナイザクラスのインスタンス
