@@ -3,3 +3,12 @@
 
 # venv ディレクトリを無視
 venv/
+
+
+# ipynbは無視
+
+*.ipynb
+
+# Script内のビルドをバックアップしない
+
+Script/__pycache__/*

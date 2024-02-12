@@ -7,7 +7,7 @@ import argparse
 import time
 
 import mlx.core as mx  # mlx.coreモジュールをmxとしてインポート
-import models  # modelsモジュールをインポート
+from Script import models  # modelsモジュールをインポート
 
 def generate(
     model: models.Model,  # モデルクラスのインスタンス
@@ -22,8 +22,8 @@ def generate(
     tokens = []  # 生成されたトークンを格納するリスト
     skip = 0  # 既に出力された文字数
     for token, n in zip(
-        models.generate(prompt, model, args.temp),  # モデルを使用してトークンを生成
-        range(args.max_tokens),  # 最大トークン数まで繰り返し
+        models.generate(prompt, model, temp),  # モデルを使用してトークンを生成
+        range(max_tokens),  # 最大トークン数まで繰り返し
     ):
         if token == tokenizer.eos_token_id:  # EOSトークンが出たらループを抜ける
             break
@@ -89,3 +89,13 @@ if __name__ == "__main__":
     mx.random.seed(args.seed)  # 乱数生成器のシードを設定
     model, tokenizer = models.load(args.gguf, args.repo)  # モデルとトークナイザをロード
     generate(model, tokenizer, args.prompt, args.max_tokens, args.temp)  # テキスト生成関数を呼び出し
+
+
+def createOrigin(prompt:str):
+    gguf ='mistral-7b-v0.1.Q8_0.gguf'
+    repo = 'TheBloke/Mistral-7B-v0.1-GGUF'
+    max_token = 100
+
+    mx.random.seed(100)  # 乱数生成器のシードを設定
+    model, tokenizer = models.load(gguf, repo)  # モデルとトークナイザをロード
+    generate(model, tokenizer, prompt, max_token, 0)  # テキスト生成関数を呼び出し
